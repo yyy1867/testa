@@ -1,0 +1,5 @@
+========================================
+应用名称:testa
+应用版本:${application.formatted-version}
+框架版本:${spring-boot.formatted-version}
+========================================
