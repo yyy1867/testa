@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CoolMenuRepository extends JpaRepository<CoolMenu, BigDecimal> {
 
+    def List<CoolMenu> findByChildmenusIsNotNull()
+
 }
