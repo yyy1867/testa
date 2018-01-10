@@ -1,6 +1,8 @@
 package ml.guxing.test.core.entity
 
 import javax.persistence.Entity
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
 import javax.persistence.Table
 
@@ -8,7 +10,7 @@ import javax.persistence.Table
 @Table(name = "SM_GROUP")
 class Group extends BaseEntity {
 
-    @OneToMany
+    @ManyToMany(mappedBy = "groups")
     Set<User> users;
 
 }

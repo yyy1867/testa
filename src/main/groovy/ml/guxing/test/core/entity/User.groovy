@@ -1,6 +1,10 @@
 package ml.guxing.test.core.entity
 
+import javax.persistence.CascadeType
 import javax.persistence.Entity
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
 import javax.persistence.Table
 
 @Entity
@@ -15,4 +19,8 @@ class User extends BaseEntity {
     String contactaddress;// 工作地址
     String postalcode;// 邮政编码
     String detailinformation;// 介绍
+    @ManyToMany(cascade = [CascadeType.REFRESH])
+    @JoinTable(name = "SM_USERGROUP", joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID"))
+    Set<Group> groups;
 }

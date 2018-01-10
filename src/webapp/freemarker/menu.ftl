@@ -1,7 +1,8 @@
 <#macro loadmenusbyroots rootmenus=[] cj=1>
     <#if rootmenus??>
         <#list rootmenus as rootmenu>
-        <li class="${(cj==1&&rootmenu.childmenus??)?string('treeview','')}"><a href="#" data-url="${rootmenu.url!"#"}"><i
+        <li class="${(cj==1&&rootmenu.childmenus??)?string('treeview','')}"><a href="#"
+                                                                               data-url="${rootmenu.url!"#"}"><i
                 class="fa ${(rootmenu.childmenus??)?string(rootmenu.icon!"fa-dashboard",rootmenu.icon!"fa-circle-o")}"></i> ${rootmenu.name!"未命名"}
         <#if rootmenu.childmenus??>
             <span class="pull-right-container">
