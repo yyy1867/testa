@@ -1,14 +1,17 @@
 package ml.guxing.test.core;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
-@SpringBootApplication
 @EnableEurekaServer
+@EnableConfigServer
+@SpringBootApplication
 public class TestServerStartMain {
 
     public static void main(String[] args) {
-
+        SpringApplication.run(TestServerStartMain.class);
     }
 
 }
