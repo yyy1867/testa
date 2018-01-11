@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-class GroovyStartMain {
+class TestAStartMain {
 
     static void main(String[] args) {
         def application = new SpringApplication()
-        application.run(GroovyStartMain.class, args)
+        application.run(TestAStartMain.class, args)
     }
 }
