@@ -2,16 +2,12 @@ package ml.guxing.test.core.action
 
 import ml.guxing.test.core.repository.CoolMenuRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
 class BaseAction {
-
-    @Value("\${testname}")
-    String testname;
 
     @Autowired
     CoolMenuRepository coolMenuRepository
@@ -27,9 +23,10 @@ class BaseAction {
         return "menu"
     }
 
-    @RequestMapping("/getTestName")
+    @RequestMapping("/GetMyMenus")
     @ResponseBody
-    def String getTestName() {
-        return testname
+    def Object getRootmenus() {
+        return coolMenuRepository.findByChildmenusIsNotNull()
     }
+
 }
