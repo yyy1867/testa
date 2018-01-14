@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动画测试</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../assets/layui/css/layui.css">
+</head>
+<body>
+
+<div class="layui-bg-green layui-icon layui-anim layui-anim-up layui-anim-loop"
+     style="width: 100px;height: 100px;font-size: 40px">
+    &#xe68e;
+</div>
+
+<button data-method="easyMsg" class="layui-btn">简单MSG</button>
+<button data-method="easyOpen" class="layui-btn">简单页面</button>
+
+<script src="../assets/layui/layui.js"></script>
+<script>
+    layui.use(["jquery", "layer"], function () {
+        var $ = layui.jquery, layer = layui.layer;
+
+        // 定义全部需要的方法
+        var active = {
+            easyMsg: function () {
+                layer.msg("点击了简单MSG按钮!");
+            },
+            easyOpen: function () {
+                layer.open({content: "简单的打开页面", time: 3000,type:4});
+            }
+        };
+
+        $(".layui-btn").on("click", function () {
+            var othis = $(this), methodName = othis.data('method');
+            active[methodName] ? active[methodName].call(this.othis) : console.error('not found method by name ' + methodName);
+        });
+    });
+</script>
+</body>
+</html>
