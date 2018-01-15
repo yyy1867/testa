@@ -44,8 +44,9 @@
 
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll" id="MainDH">
+            <div id="sidebar" class="sidebar-fold" title="缩小菜单"><i class="fa fa-bars"></i></div>
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <ul class="layui-nav layui-nav-tree" lay-filter="MyMenus" id="MyMenus">
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">所有商品</a>
                     <dl class="layui-nav-child">
@@ -96,12 +97,42 @@
 
 <script src="assets/layui/layui.js"></script>
 <script>
+
+    function isObject(obj) {
+        return obj instanceof Object || typeof obj == 'object';
+    }
+
+    function isArray(obj) {
+        return isObject(obj) && obj.hasOwnProperty('length');
+    }
+
+
     layui.config({
         version: true,// 不缓存
         debug: true,// debug模式
-    }).use(['layer', 'form', 'element', 'jquery'], function () {
-        var layer = layui.layer, form = layui.form, element = layui.element, $ = layui.jquery;
+    }).use(['layer', 'form', 'element', 'jquery', 'laytpl'], function () {
+        var layer = layui.layer, form = layui.form, element = layui.element, $ = layui.jquery, laytpl = layui.laytpl;
 
+        // 初始化菜单
+        $.getJSON('GetMyMenus.action', {}, function (data) {
+            if (isObject(data)) {
+                var diguijiazai = function (data, ul) {
+                    $.each(data, function (i, item) {
+                        var li = $("<li class='layui-nav-item'></li>");
+                        var a = $(laytpl("<a href='javascript:;'>{{d.name}}</a>").render(item));
+                        li.append(a);
+                        ul.append(li);
+                        if (isArray(item.childmenus) && item.childmenus.length > 0) {
+                            var childUL = $("<ul></ul>");
+                            li.append(childUL);
+                            diguijiazai(item.childmenus, childUL);
+                        }
+                    });
+                }
+                diguijiazai(data, $("#MyMenus"))
+                console.info(data);
+            }
+        });
 
 
         layer.msg('测试页面');
