@@ -3,7 +3,7 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Responsive Hover Table</h3>
+                    <h3 class="box-title">测试数据表格</h3>
 
                     <div class="box-tools">
                         <div class="input-group input-group-sm" style="width: 150px;">
@@ -506,12 +506,9 @@
 </section>
 <script type="text/javascript">
     $('#example').dataTable({
-        "language": {
-            "lengthMenu": "每页 _MENU_ 条记录",
-            "zeroRecords": "没有找到记录",
-            "info": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 )",
-            "infoEmpty": "无记录",
-            "infoFiltered": "(从 _MAX_ 条记录过滤)"
-        }
+        searching: false, //关闭搜索
+        lengthChange:false,//不允许改变每页显示的记录
+        info:false,
+        paging:false,
     });
 </script>

@@ -106,7 +106,6 @@
         return isObject(obj) && obj.hasOwnProperty('length');
     }
 
-
     layui.config({
         version: true,// 不缓存
         debug: true,// debug模式
@@ -123,9 +122,11 @@
                         li.append(a);
                         ul.append(li);
                         if (isArray(item.childmenus) && item.childmenus.length > 0) {
-                            var childUL = $("<ul></ul>");
+                            var childUL = $("<dl class='layui-nav-child'></dl>");
                             li.append(childUL);
-                            diguijiazai(item.childmenus, childUL);
+                            $.each(item.childmenus, function (j, chil) {
+                                childUL.append(laytpl("<dd><a href='javascript:;'>{{d.name}}</a></dd>").render(chil));
+                            });
                         }
                     });
                 }
