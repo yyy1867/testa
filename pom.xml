@@ -12,11 +12,13 @@
     <modules>
         <module>testa</module>
         <module>testserver</module>
+        <module>testscala</module>
     </modules>
 
     <properties>
         <springboot.version>1.5.9.RELEASE</springboot.version>
         <groovy.version>2.4.13</groovy.version>
+        <scala.version>2.11.12</scala.version>
     </properties>
 
     <dependencies>
@@ -73,6 +75,20 @@
                 <artifactId>h2</artifactId>
                 <version>1.4.195</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-reflect</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
 
