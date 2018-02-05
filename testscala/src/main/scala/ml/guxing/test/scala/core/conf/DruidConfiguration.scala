@@ -10,7 +10,6 @@ import org.springframework.boot.web.servlet.{FilterRegistrationBean, ServletRegi
 import org.springframework.context.annotation.{Bean, Configuration}
 
 @Configuration
-//@EnableConfigurationProperties(Array(classOf[DruidDataSource]))
 class DruidConfiguration {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[DruidConfiguration])
