@@ -1,23 +1,19 @@
 package ml.guxing.test.scala.core.action
 
-import ml.guxing.test.scala.core.mapper.TmCoolmenuMapper
+import java.math.BigInteger
+
+import ml.guxing.test.scala.core.dao.TmCoolmenuDao
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-class HomeController(val tmCoolmenuMapper: TmCoolmenuMapper) {
+class HomeController(val tmCoolmenuDao: TmCoolmenuDao) {
 
-  @RequestMapping(Array("/home"))
-  def home(model: Model): String = {
-    // 先判断登录的用户
-
-    // 根据用户查看权限
-
-    // 根据权限搜锁出菜单
-
-    // 添加菜单,用户,权限
-    model.addAttribute("menus", tmCoolmenuMapper.selectAll())
+  @RequestMapping(Array(""))
+  def list(model: Model): String = {
+    val seq = tmCoolmenuDao.findByIds(Array(BigInteger.valueOf(1)))
+    model.addAttribute("menus", seq)
     "base"
   }
 
