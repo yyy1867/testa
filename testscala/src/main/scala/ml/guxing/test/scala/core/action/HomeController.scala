@@ -12,8 +12,9 @@ class HomeController(val tmCoolmenuDao: TmCoolmenuDao) {
 
   @RequestMapping(Array(""))
   def list(model: Model): String = {
-    val seq = tmCoolmenuDao.findByIds(Array(BigInteger.valueOf(1)))
-    model.addAttribute("menus", seq)
+    val list = tmCoolmenuDao.findByIds(Array(BigInteger.valueOf(1)))
+    model.addAttribute("aaaa", "aaaasada")
+    model.addAttribute("menus", list)
     "base"
   }
 
