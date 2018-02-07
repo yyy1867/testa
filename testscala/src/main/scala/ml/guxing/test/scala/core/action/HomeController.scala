@@ -15,7 +15,12 @@ class HomeController(val tmCoolmenuDao: TmCoolmenuDao) {
     val list = tmCoolmenuDao.findByIds(Array(BigInteger.valueOf(1)))
     model.addAttribute("aaaa", "aaaasada")
     model.addAttribute("menus", list)
-    "base"
+    "common/homepage"
+  }
+
+  @RequestMapping(Array("/table"))
+  def table(model: Model):String = {
+    "table/table"
   }
 
 }
