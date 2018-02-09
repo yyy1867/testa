@@ -3,8 +3,10 @@ package ml.guxing.test.scala.core.dao
 import java.math.BigInteger
 
 import ml.guxing.test.scala.core.domain.MmTable
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.rest.core.annotation.RepositoryRestResource
 
-trait MmTableDao extends CrudRepository[MmTable, BigInteger] {
+@RepositoryRestResource(path = "tables")
+trait MmTableDao extends JpaRepository[MmTable, BigInteger] {
 
 }

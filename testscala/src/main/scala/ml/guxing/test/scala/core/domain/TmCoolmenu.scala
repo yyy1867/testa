@@ -12,29 +12,29 @@ import scala.beans.BeanProperty
 class TmCoolmenu extends SystemModel {
 
   @BeanProperty
-  var name: String = null
+  var name: String = _
   @BeanProperty
-  var code: String = null
+  var code: String = _
   @BeanProperty
-  var memo: String = null
+  var memo: String = _
   @BeanProperty
-  var parentmenuId: java.math.BigDecimal = null
+  var parentmenuId: java.math.BigDecimal = _
   @BeanProperty
-  var url: String = null
+  var url: String = _
   @BeanProperty
-  var icon: String = null
+  var icon: String = _
   @BeanProperty
-  var enable: java.math.BigDecimal = null
+  var enable: java.math.BigDecimal = _
   @BeanProperty
-  var ordinal: java.math.BigDecimal = null
+  var ordinal: java.math.BigDecimal = _
   @BeanProperty
-  var parameters: String = null
+  var parameters: String = _
   @ManyToOne(cascade = Array(CascadeType.REFRESH))
   @JoinColumn(name = "parentmenuId", insertable = false, updatable = false)
   @BeanProperty
   @JsonIgnore
-  var parentmenu: TmCoolmenu = null
+  var parentmenu: TmCoolmenu = _
   @OneToMany(cascade = Array(CascadeType.REFRESH), mappedBy = "parentmenu")
   @BeanProperty
-  var childmenus: util.List[TmCoolmenu] = null
+  var childmenus: util.List[TmCoolmenu] = _
 }
