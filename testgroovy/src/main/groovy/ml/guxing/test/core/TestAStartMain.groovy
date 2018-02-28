@@ -1,11 +1,11 @@
-package ml.guxing.test.core
+package ml.guxing.test.core.test.core
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 
 @SpringBootApplication
-@EnableEurekaClient
+//@EnableEurekaClient
 class TestAStartMain {
 
     static void main(String[] args) {

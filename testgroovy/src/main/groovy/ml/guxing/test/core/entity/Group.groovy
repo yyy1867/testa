@@ -1,5 +1,4 @@
 package ml.guxing.test.core.entity
-
 import javax.persistence.Entity
 import javax.persistence.JoinTable
 import javax.persistence.ManyToMany

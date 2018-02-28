@@ -22,6 +22,7 @@
         <springboot.version>1.5.9.RELEASE</springboot.version>
         <groovy.version>2.4.13</groovy.version>
         <scala.version>2.11.12</scala.version>
+        <activiti.version>6.0.0</activiti.version>
     </properties>
 
     <dependencies>
@@ -121,6 +122,25 @@
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
                 <version>${scala.version}</version>
+            </dependency>
+
+            <!-- activiti -->
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-spring-boot-starter-basic</artifactId>
+                <version>${activiti.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-modeler</artifactId>
+                <version>${activiti.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-diagram-rest</artifactId>
+                <version>${activiti.version}</version>
             </dependency>
 
             <!-- webJar -->
