@@ -1,18 +1,26 @@
 package ml.guxing.test.core.config
 
+import com.alibaba.druid.pool.DruidDataSource
 import com.alibaba.druid.support.http.StatViewServlet
 import com.alibaba.druid.support.http.WebStatFilter
-import org.springframework.beans.factory.annotation.Configurable
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.boot.web.servlet.ServletRegistrationBean
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
-@Configurable
+import javax.sql.DataSource
+
+@Configuration
 class DruidConfiguration {
+
+    def Logger logger = LoggerFactory.getLogger(DruidConfiguration.class)
 
     @Bean
     public ServletRegistrationBean druidServlet() {
-        log.info("init Druid Servlet Configuration ");
+        logger.info("init Druid Servlet Configuration ");
         ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
         servletRegistrationBean.setServlet(new StatViewServlet());
         servletRegistrationBean.addUrlMappings("/druid/*");
@@ -34,5 +42,12 @@ class DruidConfiguration {
         filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
         return filterRegistrationBean;
     }
+
+    @Bean
+    @ConfigurationProperties("spring.datasource")
+    def DataSource loadDruidDataSource() {
+        new DruidDataSource()
+    }
+
 
 }
