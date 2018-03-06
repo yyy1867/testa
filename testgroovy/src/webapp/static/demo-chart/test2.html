@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chart测试</title>
+    <link rel="stylesheet" href="../assets/bootstarp/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstarp/css/bootstrap-theme.min.css">
+
+    <script type="text/javascript" src="../assets/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/chart/echarts.common.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div id="oneDiv" class="col-md-8">
+            <!-- 图表组件 -->
+            <div id="myChart" style="width: 100%;height: 600px;">
+
+            </div>
+        </div>
+        <div id="twoDiv" class="col-md-4">
+            <div class="btn-group">
+                <div class="btn btn-default" data-click="test">默认测试图表</div>
+                <div class="btn btn-default" data-click="tiaoxing">条形图</div>
+                <div class="btn btn-default" data-click="resize">调整大小</div>
+                <div class="btn btn-default" data-click="zhexian">折线图</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        // var myChart = document.getElementById('myChart').getContext('2d');
+        var myChart = echarts.init(document.getElementById('myChart'));
+        var chartObj = undefined;
+        var tempi = 0;
+
+        // 事件列表
+        var events = {
+            test: function (ev) {
+                var xarray = new Array();
+                var cps = new Array();// CP项目
+                var rds = new Array();// RD项目
+                var zhs = new Array();// 总和
+                for (tempi = 1; tempi <= 31; tempi++) {
+                    var a = parseInt(Math.random() * 1000 % 10);
+                    var b = parseInt(Math.random() * 1000 % 10);
+                    var c = a + b;
+                    cps.push(a), rds.push(b), zhs.push(c);
+                    var ri = tempi < 10 ? "0" + tempi : tempi + "";
+                    xarray.push("201803" + ri);
+                }
+                myChart.setOption({
+                    title: {
+                        text: "2018年3月工时记录",
+                        subtext: "员工:黄元"
+                    },
+                    toolbox: {
+                        show: true,
+                    },
+                    legend: {
+                        data: ["RD-PKITSP", "CP-PKITSP", "总和"]
+                    },
+                    xAxis: {
+                        data: xarray
+                    },
+                    dataZoom: [{
+                        id: "dataZoomX",
+                        type: "slider",
+                        // xAxisIndex: [0, 2],
+                        start: 0,
+                        end: 10
+                    }],
+                    yAxis: {},
+                    series: [{
+                        name: 'RD-PKITSP',
+                        type: 'line',
+                        data: cps
+                    }, {
+                        name: 'CP-PKITSP',
+                        type: 'line',
+                        data: rds
+                    }, {
+                        name: '总和',
+                        type: 'line',
+                        data: zhs
+                    }]
+                });
+            }
+        }
+
+        // 注册事件
+        $(".btn[data-click]").on('click', function (ev) {
+            var click = $(this).data('click');
+            if (events.hasOwnProperty(click)) {
+                events[click].apply(this, [ev]);
+            } else {
+                console.log("不包含这个方法:" + click);
+            }
+        });
+
+        events.test();
+    });
+
+</script>
+</body>
+</html>

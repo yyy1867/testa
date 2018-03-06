@@ -5,7 +5,7 @@ var ActivitiRest = {
 		
 		$.ajax({
 			url: url,
-			dataType: 'jsonp',
+			dataType: 'json',
 			cache: false,
 			async: true,
 			success: function(data, textStatus) {
@@ -19,7 +19,7 @@ var ActivitiRest = {
 		}).done(function(data, textStatus) {
 			console.log("ajax done");
 		}).fail(function(jqXHR, textStatus, error){
-			console.error('Get diagram layout['+processDefinitionKey+'] failure: ', textStatus, 'error: ', error, jqXHR);
+            console.error('Get diagram layout['+processDefinitionKey+'] failure: ', textStatus, 'error: ', error, jqXHR);
 		});
 	},
 	
@@ -31,6 +31,7 @@ var ActivitiRest = {
 			dataType: 'jsonp',
 			cache: false,
 			async: true,
+            crossDomain:true,
 			success: function(data, textStatus) {
 				var processDefinitionDiagramLayout = data;
 				if (!processDefinitionDiagramLayout) {

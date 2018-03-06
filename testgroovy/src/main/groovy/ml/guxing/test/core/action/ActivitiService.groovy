@@ -5,8 +5,14 @@ import groovy.json.JsonSlurper
 import org.activiti.bpmn.converter.BpmnXMLConverter
 import org.activiti.editor.language.json.converter.BpmnJsonConverter
 import org.activiti.engine.*
+import org.activiti.engine.history.HistoricActivityInstance
 import org.activiti.engine.impl.ProcessEngineImpl
+import org.activiti.engine.impl.context.Context
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity
+import org.activiti.engine.impl.pvm.PvmTransition
+import org.activiti.engine.impl.pvm.process.ActivityImpl
 import org.activiti.engine.repository.Model
+import org.activiti.image.ProcessDiagramGenerator
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -38,6 +44,7 @@ class ActivitiService {
     @Autowired
     def ObjectMapper objectMapper
     def JsonSlurper jsonSlurper
+    def ProcessDiagramGenerator diagramGenerator
 
     @PostConstruct
     def init() {
@@ -49,8 +56,13 @@ class ActivitiService {
         taskService = processEngineImpl.getTaskService()
         runtimeService = processEngineImpl.getRuntimeService()
         historyService = processEngineImpl.getHistoryService()
-//        processEngineImpl.getProcessEngineConfiguration().getd
         jsonSlurper = JsonSlurper.newInstance()
+
+        def configuration = processEngineImpl.getProcessEngineConfiguration()
+        Context.setProcessEngineConfiguration(configuration)
+        diagramGenerator = configuration.getProcessDiagramGenerator()
+
+
     }
 
     @RequestMapping("")
@@ -82,11 +94,13 @@ class ActivitiService {
         def String BASE_URL = "http://127.0.0.1:8081"
         def editUrl = "${BASE_URL}/process-editor/modeler.html"
         def deployUrl = "${BASE_URL}/act/deployModel"
+        def downUrl = "${BASE_URL}/act/downloadModel"
         def list = repositoryService.createModelQuery().list()
         return list?.collect {
             ["id"       : it.id, "name": it.name, "key": it.key,
              "editUrl"  : "${editUrl}?modelId=${it.id}".toString(),
-             "deployUrl": "${deployUrl}?modelId=${it.id}".toString()]
+             "deployUrl": "${deployUrl}?modelId=${it.id}".toString(),
+             "downUrl"  : "${downUrl}?modelId=${it.id}".toString()]
         }
     }
 
@@ -106,25 +120,15 @@ class ActivitiService {
     @ResponseBody
     def Object listTask() {
         def String BASE_URL = "http://127.0.0.1:8081"
+        def String viewUrl = "${BASE_URL}/diagram-viewer/index.html"
+        def String pngUrl = "${BASE_URL}/act/queryTask?taskId="
         def list = taskService.createTaskQuery().list()
-        return list?.collect({
-            [id: it.id, name: it.name, processInstanceId: it.processInstanceId, executionId: it.executionId]
+        return list?.collecot({
+            [id                 : it.id, name: it.name, processInstanceId: it.processInstanceId, executionId: it.executionId,
+             processDefinitionId: it.processDefinitionId,
+             viewUrl            : "${viewUrl}?processInstanceId=${it.processInstanceId}&processDefinitionId=${it.processDefinitionId}".toString(),
+             pngUrl             : pngUrl + it.id]
         })
-//        def types = ["java.lang.String", "int", "boolean", "java.util.Date"]
-//        def fields = list[0].getMetaClass().properties.findAll({
-//            it["getter"] != null
-//        })
-//        return list.collect { row ->
-//            def map = [:]
-//            fields.forEach({
-//                try {
-//                    map[it.name] = it.getProperty(row)?.toString()
-//                } catch (Exception e) {
-//
-//                }
-//            })
-//            map
-//        }
     }
 
     @RequestMapping("/deployModel")
@@ -143,6 +147,19 @@ class ActivitiService {
         return "不存在的模型Id"
     }
 
+    @RequestMapping("/downloadModel")
+    def Object downloadModel(@RequestParam String modelId, HttpServletResponse response) {
+        def model = repositoryService.createModelQuery().modelId(modelId).singleResult()
+        if (model) {
+            def bpmnModel = new BpmnJsonConverter().convertToBpmnModel(objectMapper.readTree(repositoryService.getModelEditorSource(model.id)))
+            def xmlBytes = new BpmnXMLConverter().convertToXML(bpmnModel)
+            response.getOutputStream().write(xmlBytes)
+            response.getOutputStream().flush()
+            return "success"
+        }
+        return "不存在的模型Id"
+    }
+
     @RequestMapping("/startProcess")
     @ResponseBody
     def Object startProcess(@RequestParam String processKey) {
@@ -151,12 +168,21 @@ class ActivitiService {
     }
 
     @RequestMapping("/queryTask")
-    @ResponseBody
-    def Object queryTask(@RequestParam String taskId) {
+    def Object queryTask(@RequestParam String taskId, HttpServletResponse response) {
         def task = taskService.createTaskQuery().taskId(taskId).singleResult()
-        def isFin = historyService.createHistoricProcessInstanceQuery().processDefinitionId(task.processInstanceId).singleResult()
-//        if(processInstance.)
-        return isFin
+        def processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(task.processInstanceId).singleResult()
+        def bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId())
+        def definitionEntity = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId()) as ProcessDefinitionEntity
+        def highLightedActivitList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list()
+        def highLightedActivitis = new ArrayList()
+        def highLightedFlows = getHighLightedFlows(definitionEntity, highLightedActivitList)
+        highLightedActivitList.each { tempActivity ->
+            highLightedActivitis.add(tempActivity.getActivityId())
+        }
+        def inputStream = diagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivitis, highLightedFlows, "微软雅黑", "微软雅黑", "微软雅黑", null, 1.0)
+//        def inputStream = diagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivitis, highLightedFlows)
+        response.getOutputStream().write(inputStream.bytes)
+        return "success"
     }
 
 
@@ -196,6 +222,52 @@ class ActivitiService {
             return "/error"
         }
         return "redirect:/process-editor/modeler.html?modelId=${modelData.id}"
+    }
+
+
+    private List<String> getHighLightedFlows(
+            ProcessDefinitionEntity processDefinitionEntity,
+            List<HistoricActivityInstance> historicActivityInstances) {
+        List<String> highFlows = new ArrayList<String>();// 用以保存高亮的线flowId
+        for (int i = 0; i < historicActivityInstances.size() - 1; i++) {// 对历史流程节点进行遍历
+            ActivityImpl activityImpl = processDefinitionEntity
+                    .findActivity(historicActivityInstances.get(i)
+                    .getActivityId());// 得到节点定义的详细信息
+            List<ActivityImpl> sameStartTimeNodes = new ArrayList<ActivityImpl>();// 用以保存后需开始时间相同的节点
+            ActivityImpl sameActivityImpl1 = processDefinitionEntity
+                    .findActivity(historicActivityInstances.get(i + 1)
+                    .getActivityId());
+            // 将后面第一个节点放在时间相同节点的集合里
+            sameStartTimeNodes.add(sameActivityImpl1);
+            for (int j = i + 1; j < historicActivityInstances.size() - 1; j++) {
+                HistoricActivityInstance activityImpl1 = historicActivityInstances
+                        .get(j);// 后续第一个节点
+                HistoricActivityInstance activityImpl2 = historicActivityInstances
+                        .get(j + 1);// 后续第二个节点
+                if (activityImpl1.getStartTime().equals(
+                        activityImpl2.getStartTime())) {
+                    // 如果第一个节点和第二个节点开始时间相同保存
+                    ActivityImpl sameActivityImpl2 = processDefinitionEntity
+                            .findActivity(activityImpl2.getActivityId());
+                    sameStartTimeNodes.add(sameActivityImpl2);
+                } else {
+                    // 有不相同跳出循环
+                    break;
+                }
+            }
+            List<PvmTransition> pvmTransitions = activityImpl
+                    .getOutgoingTransitions();// 取出节点的所有出去的线
+            for (PvmTransition pvmTransition : pvmTransitions) {
+                // 对所有的线进行遍历
+                ActivityImpl pvmActivityImpl = (ActivityImpl) pvmTransition
+                        .getDestination();
+                // 如果取出的线的目标节点存在时间相同的节点里，保存该线的id，进行高亮显示
+                if (sameStartTimeNodes.contains(pvmActivityImpl)) {
+                    highFlows.add(pvmTransition.getId());
+                }
+            }
+        }
+        return highFlows;
     }
 
 }

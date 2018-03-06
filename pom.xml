@@ -22,15 +22,15 @@
         <springboot.version>1.5.9.RELEASE</springboot.version>
         <groovy.version>2.4.13</groovy.version>
         <scala.version>2.11.12</scala.version>
-        <activiti.version>6.0.0</activiti.version>
+        <activiti.version>5.22.0</activiti.version>
     </properties>
 
     <dependencies>
         <!-- 热部署 -->
         <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-devtools</artifactId>-->
-        <!--<optional>true</optional>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-devtools</artifactId>-->
+            <!--<optional>true</optional>-->
         <!--</dependency>-->
         <!-- 测试 -->
         <dependency>
@@ -134,13 +134,13 @@
             <dependency>
                 <groupId>org.activiti</groupId>
                 <artifactId>activiti-modeler</artifactId>
-                <version>${activiti.version}</version>
+                <version>5.22.0</version>
             </dependency>
 
             <dependency>
                 <groupId>org.activiti</groupId>
                 <artifactId>activiti-diagram-rest</artifactId>
-                <version>${activiti.version}</version>
+                <version>5.22.0</version>
             </dependency>
 
             <!-- webJar -->

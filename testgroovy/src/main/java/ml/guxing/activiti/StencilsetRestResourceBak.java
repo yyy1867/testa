@@ -28,6 +28,7 @@ public class StencilsetRestResourceBak extends StencilsetRestResource {
         } catch (Exception var3) {
             throw new ActivitiException("Error while loading stencil set", var3);
         }
+
     }
 
 }

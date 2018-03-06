@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@ComponentScan(["ml.guxing.activiti"])
+@ComponentScan(["ml.guxing.activiti", "org.activiti.rest.diagram.services"])
 //@ComponentScan(["org.activiti.rest.editor", "org.activiti.rest.diagram", "ml.guxing.activiti"])
 class ActivitiConfiguration {
 
@@ -14,5 +14,10 @@ class ActivitiConfiguration {
     def ObjectMapper loadObjectMapper() {
         return new ObjectMapper()
     }
+
+//    @Bean
+//    def BaseProcessDefinitionDiagramLayoutResource configView(){
+//        return new BaseProcessDefinitionDiagramLayoutResource()
+//    }
 
 }
