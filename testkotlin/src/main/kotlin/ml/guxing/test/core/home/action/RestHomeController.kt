@@ -10,18 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
-@FeignClient("test-groovy")
-interface BaseActionController {
-    @GetMapping("")
-    fun index(): String
-
-    @GetMapping("/getMenus")
-    fun getRootmenus(): String
-
-    @GetMapping("/listServices")
-    fun getListServices(): String
-}
-
 @RestController
 class RestHomeController {
 
@@ -31,8 +19,6 @@ class RestHomeController {
     var client: DiscoveryClient? = null
     @Autowired
     var restTemplate: RestTemplate? = null
-    @Autowired
-    var baseActionController: BaseActionController? = null
 
     @RequestMapping("")
     fun home(): String {
@@ -41,11 +27,11 @@ class RestHomeController {
 
     @RequestMapping("/hello")
     fun helloword(): String {
-        var instance = client?.localServiceInstance
-        logger.info("/hello,host:${instance?.host},serviceId:${instance?.serviceId}")
+//        var instance = client?.localServiceInstance
+//        logger.info("/hello,host:${instance?.host},serviceId:${instance?.serviceId}")
 //        println("====test-kotlin")
 //        val body = restTemplate?.getForEntity("http://test-kotlin", String::class.java)?.body
-        var listServices = baseActionController?.getListServices()
+//        var listServices = baseActionController?.getListServices()
         return "Hello Word!!!"
     }
 

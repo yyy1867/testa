@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-//@EnableEurekaClient
+@org.springframework.cloud.netflix.eureka.EnableEurekaClient
 class TestAStartMain {
 
     static void main(String[] args) {
